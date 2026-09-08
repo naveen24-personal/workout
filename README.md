@@ -74,8 +74,11 @@ gym/
 There is no motion-capture data and no `.glb` model. The figure is built from code:
 
 1. **The rig** (`js/3d/rig.js`) nests 19 `Object3D` joints — hips → spine → chest → arms/legs —
-   with capsules for limbs and thin "muscle plates" that light up orange for the muscles an
-   exercise trains.
+   with capsules for limbs and hidden "muscle plates" that light up orange for the muscles an
+   exercise trains. Two looks share that one skeleton: **avatar** (skin, hair, beard, tee, relaxed
+   jeans, trainers, watch) and **anatomy** (the plain grey mannequin), toggled from the player.
+   The whole colour scheme lives in `PALETTE` at the top of the file — change the six hex values
+   there to restyle the character's skin, hair and clothes.
 
 2. **A clip** (`js/3d/clips_*.js`) is 4–6 hand-written poses. A pose is just joint rotations in
    degrees plus a root position, e.g.

@@ -5,7 +5,7 @@
    ============================================================ */
 import { ExerciseViewer, VIEWS } from '../3d/viewer.js';
 import { getEx } from '../data/exercises.js';
-import { esc, el, $, $$ } from './dom.js';
+import { esc, el, $, $$, store, load } from './dom.js';
 
 const SPEEDS = [0.25, 0.5, 1];
 
@@ -27,6 +27,7 @@ export function playerMarkup() {
           <span class="ctrl-spacer"></span>
           <div class="ctrl-row" id="speeds"></div>
           <div class="ctrl-row" id="views"></div>
+          <button class="chip" id="btnStyle" title="Switch between the avatar and the plain mannequin">ANATOMY</button>
           <button class="chip on" id="btnMuscles" title="Highlight the working muscles">MUSCLES</button>
           <button class="chip" id="btnRec" title="Record this animation as a video file">REC</button>
         </div>
@@ -99,6 +100,19 @@ export function mountPlayer(host, exId) {
     b.classList.add('on');
     viewer.setView(b.dataset.view);
   };
+
+  const btnStyle = $('#btnStyle', host);
+  btnStyle.onclick = () => {
+    const style = viewer.toggleStyle();
+    btnStyle.textContent = style === 'avatar' ? 'ANATOMY' : 'AVATAR';
+    btnStyle.classList.toggle('on', style === 'anatomy');
+    store({ figureStyle: style });
+  };
+  if (load().figureStyle === 'anatomy') {
+    viewer.setStyle('anatomy');
+    btnStyle.textContent = 'AVATAR';
+    btnStyle.classList.add('on');
+  }
 
   const btnMus = $('#btnMuscles', host);
   btnMus.onclick = () => { btnMus.classList.toggle('on', viewer.toggleMuscles()); };

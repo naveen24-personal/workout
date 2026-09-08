@@ -114,7 +114,7 @@ export class ExerciseViewer {
     this.scene.add(grid);
 
     /* ---- figure ---- */
-    this.figure = buildFigure();
+    this.figure = buildFigure({ style: this.opts.style || 'avatar' });
     this.scene.add(this.figure.root);
 
     /* ---- controls ---- */
@@ -277,6 +277,17 @@ export class ExerciseViewer {
     this.controls.target.set(t[0], t[1], t[2]);
     this.controls.update();
     this.view = name;
+  }
+
+  /** Swap between the dressed avatar and the plain grey mannequin. */
+  toggleStyle() {
+    if (!this.ok) return 'avatar';
+    return this.figure.toggleStyle();
+  }
+
+  setStyle(name) {
+    if (!this.ok) return;
+    this.figure.setStyle(name);
   }
 
   toggleMuscles() {

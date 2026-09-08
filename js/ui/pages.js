@@ -60,7 +60,7 @@ export function homePage() {
             <div class="hstat"><b>6</b><span>training days</span></div>
             <div class="hstat"><b>4×</b><span>core sessions / week</span></div>
             <div class="hstat"><b>150+</b><span>cardio minutes / week</span></div>
-            <div class="hstat"><b>36</b><span>animated exercises</span></div>
+            <div class="hstat"><b>49</b><span>animated exercises</span></div>
           </div>
         </div>
         <div></div>
@@ -101,14 +101,16 @@ export function homePage() {
       <div class="section-head reveal">
         <span class="kicker">How the animations are made</span>
         <h2>No stock footage. Every rep is generated.</h2>
-        <p>The figure is a rigged 3D skeleton driven by hand-written keyframes — the same technique games use.
-        The equipment tracks the body in real time, so the handles, cables, sled and bar always follow the hands
-        and feet instead of drifting. That means you can rotate the camera mid-rep, slow it to a quarter speed,
-        scrub to any step, and hit <b>REC</b> to save the movement as a video file for your phone.</p>
+        <p>A rigged 3D person driven by hand-written keyframes — the same technique games use — dressed so it
+        looks like someone you would actually see in the gym rather than a robot. The equipment tracks the body in
+        real time, so the handles, cables, sled and bar always follow the hands and feet instead of drifting. You
+        can rotate the camera mid-rep, slow it to a quarter speed, scrub to any step, switch to the plain anatomy
+        mannequin, and hit <b>REC</b> to save the movement as a video file for your phone.</p>
       </div>
       <div class="grid g3">
-        <div class="card reveal"><h3>1 · Rigged figure</h3><p class="fine" style="margin-top:8px">
-          19 joints, built from code. Working muscles light up in orange so you know where you should feel it.</p></div>
+        <div class="card reveal"><h3>1 · A person, not a robot</h3><p class="fine" style="margin-top:8px">
+          19 joints built from code, with skin, hair, a beard, a tee, relaxed jeans and trainers. Working muscles
+          glow orange through the clothes, and one tap swaps the whole thing for a plain anatomy mannequin.</p></div>
         <div class="card reveal"><h3>2 · Keyframed reps</h3><p class="fine" style="margin-top:8px">
           Each exercise is 4–6 hand-authored positions, blended into a smooth loop with a labelled coaching step at every stage.</p></div>
         <div class="card reveal"><h3>3 · Recorded on demand</h3><p class="fine" style="margin-top:8px">
