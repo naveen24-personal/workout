@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pose tuner — ATLAS LAB</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎛️</text></svg>">
+<script type="importmap">
+{ "imports": {
+  "three": "./vendor/three.module.js",
+  "three/addons/controls/OrbitControls.js": "./vendor/OrbitControls.js"
+} }
+</script>
+<style>
+  body{padding:0}
+  .tune{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:100vh}
+  .tune .stage{min-height:100vh;border-radius:0}
+  .panel{background:var(--panel);border-left:1px solid var(--line);padding:18px;overflow-y:auto}
+  .panel h1{font-family:var(--display);font-size:1.1rem;margin-bottom:4px}
+  .jrow{display:grid;grid-template-columns:74px repeat(3,1fr);gap:6px;align-items:center;margin-bottom:5px}
+  .jrow label{font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+  .jrow input{background:#0c1116;border:1px solid var(--line);color:var(--ink);border-radius:7px;
+    padding:5px 6px;font-family:var(--mono);font-size:.74rem;width:100%}
+  .jrow input:focus{outline:none;border-color:var(--accent)}
+  textarea{width:100%;height:190px;background:#0c1116;border:1px solid var(--line);color:var(--ink-2);
+    border-radius:10px;padding:10px;font-family:var(--mono);font-size:.72rem;line-height:1.5}
+  select{width:100%;background:#0c1116;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px}
+  .sec{margin:16px 0 8px;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+  @media (max-width:900px){ .tune{grid-template-columns:1fr;height:auto} .tune .stage{min-height:60vh} }
+</style>
+</head>
+<body>
+<div class="tune">
+  <div class="stage" id="stage"></div>
+  <div class="panel">
+    <h1>Pose tuner</h1>
+    <p class="fine">Freeze any keyframe, drag the numbers until it looks right, then paste the pose back into
+    <span class="mono">js/3d/clips_*.js</span>. Rotations are degrees; the root position is metres.</p>
+
+    <div class="sec">Clip</div>
+    <select id="clip"></select>
+    <div class="sec">Keyframe</div>
+    <select id="frame"></select>
+    <div class="cta-row" style="margin-top:10px">
+      <button class="btn btn-ghost btn-sm" id="playBtn">Play the clip</button>
+      <button class="btn btn-ghost btn-sm" id="copyBtn">Copy pose</button>
+    </div>
+
+    <div class="sec">Root — position (m) / rotation (deg)</div>
+    <div id="rootRows"></div>
+    <div class="sec">Joints (x / y / z degrees)</div>
+    <div id="jointRows"></div>
+    <div class="sec">Pose source</div>
+    <textarea id="out" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<script type="module">
+import { ExerciseViewer } from './js/3d/viewer.js';
+import { CLIPS } from './js/3d/clips.js';
+import { Clip } from './js/3d/anim.js';
+import { JOINTS } from './js/3d/rig.js';
+
+const $ = (s) => document.querySelector(s);
+const viewer = new ExerciseViewer($('#stage'), {});
+let clipKey = Object.keys(CLIPS)[0];
+let clip = null, frameIdx = 0, pose = null;
+
+$('#clip').innerHTML = Object.keys(CLIPS).map((k) => `<option>${k}</option>`).join('');
+
+const num = (v) => Math.round(v * 100) / 100;
+
+function buildRows() {
+  $('#rootRows').innerHTML = `
+    <div class="jrow"><label>pos</label>
+      <input data-r="p0" type="number" step="0.01"><input data-r="p1" type="number" step="0.01"><input data-r="p2" type="number" step="0.01"></div>
+    <div class="jrow"><label>rot</label>
+      <input data-r="r0" type="number" step="1"><input data-r="r1" type="number" step="1"><input data-r="r2" type="number" step="1"></div>`;
+  $('#jointRows').innerHTML = JOINTS.map((j) => `
+    <div class="jrow"><label>${j}</label>
+      <input data-j="${j}" data-i="0" type="number" step="1">
+      <input data-j="${j}" data-i="1" type="number" step="1">
+      <input data-j="${j}" data-i="2" type="number" step="1"></div>`).join('');
+  document.querySelectorAll('[data-j],[data-r]').forEach((i) => i.addEventListener('input', readInputs));
+}
+
+function loadFrame() {
+  clip = new Clip(CLIPS[clipKey]);
+  frameIdx = Math.min(frameIdx, clip.frames.length - 1);
+  $('#frame').innerHTML = clip.frames.map((f, i) =>
+    `<option value="${i}"${i === frameIdx ? ' selected' : ''}>${i}. t=${f.t} ${f.label || '(hold)'}</option>`).join('');
+  pose = JSON.parse(JSON.stringify(clip.frames[frameIdx].pose));
+  paintInputs();
+  apply();
+}
+
+function paintInputs() {
+  const r = pose.root || { p: [0, 0, 0], r: [0, 0, 0] };
+  ['p', 'r'].forEach((k) => [0, 1, 2].forEach((i) => {
+    const el = document.querySelector(`[data-r="${k}${i}"]`);
+    if (el) el.value = num((r[k] || [0, 0, 0])[i]);
+  }));
+  JOINTS.forEach((j) => [0, 1, 2].forEach((i) => {
+    const el = document.querySelector(`[data-j="${j}"][data-i="${i}"]`);
+    if (el) el.value = num((pose[j] || [0, 0, 0])[i]);
+  }));
+}
+
+function readInputs() {
+  pose.root = pose.root || { p: [0, 0, 0], r: [0, 0, 0] };
+  ['p', 'r'].forEach((k) => {
+    pose.root[k] = [0, 1, 2].map((i) => +document.querySelector(`[data-r="${k}${i}"]`).value || 0);
+  });
+  JOINTS.forEach((j) => {
+    pose[j] = [0, 1, 2].map((i) => +document.querySelector(`[data-j="${j}"][data-i="${i}"]`).value || 0);
+  });
+  apply();
+}
+
+function apply() {
+  viewer.setManual(pose);
+  const parts = JOINTS
+    .filter((j) => pose[j].some((v) => Math.abs(v) > 0.01))
+    .map((j) => `${j}: [${pose[j].map(num).join(', ')}]`);
+  const r = pose.root;
+  $('#out').value =
+    `pose: P(\n  { root: { p: [${r.p.map(num).join(', ')}], r: [${r.r.map(num).join(', ')}] } },\n  { ${parts.join(', ')} }\n)`;
+}
+
+$('#clip').onchange = (e) => {
+  clipKey = e.target.value; frameIdx = 0;
+  viewer.setManual(null); viewer.load(clipKey); loadFrame();
+};
+$('#frame').onchange = (e) => { frameIdx = +e.target.value; loadFrame(); };
+$('#playBtn').onclick = () => { viewer.setManual(null); viewer.play(); };
+$('#copyBtn').onclick = async () => {
+  try { await navigator.clipboard.writeText($('#out').value); $('#copyBtn').textContent = 'Copied'; }
+  catch (e) { $('#out').select(); }
+  setTimeout(() => { $('#copyBtn').textContent = 'Copy pose'; }, 1400);
+};
+
+buildRows();
+viewer.load(clipKey);
+loadFrame();
+</script>
+</body>
+</html>

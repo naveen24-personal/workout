@@ -1,0 +1,5 @@
+node_modules/
+clips/
+*.webm
+.DS_Store
+Thumbs.db

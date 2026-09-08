@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLAS — 6-Day Fat Loss &amp; Abs Lab</title>
+<meta name="description" content="A 6-day push/pull/legs fat-loss programme with real-time 3D exercise animations, an abs system, and a five-level pull-up progression.">
+<meta name="theme-color" content="#07090c">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/controls/OrbitControls.js": "./vendor/OrbitControls.js"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="loader" class="loader"><div class="loader-ring"></div><span>loading the lab</span></div>
+
+<header class="top" id="top">
+  <div class="wrap topwrap">
+    <a class="brand" href="#/">
+      <span class="brand-mark"></span>
+      <span class="brand-txt">ATLAS<b>LAB</b></span>
+    </a>
+    <button id="burger" class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav id="nav" class="nav">
+      <a href="#/">Home</a>
+      <a href="#/plan">The Week</a>
+      <a href="#/library">Exercise Lab</a>
+      <a href="#/pullups">Pull-up Lab</a>
+      <a href="#/abs">Abs System</a>
+      <a href="#/cardio">Cardio &amp; Load</a>
+      <a href="#/you">Your Numbers</a>
+    </nav>
+  </div>
+</header>
+
+<main id="view" class="view"></main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-brand">ATLAS<b>LAB</b></p>
+        <p class="fine">Every movement on this site is rendered live in 3D — no video files, no stock footage.
+        Rotate, scrub, slow it down, or record it to a clip.</p>
+      </div>
+      <div>
+        <p class="foot-h">Programme</p>
+        <a href="#/plan">The 6-day week</a><a href="#/day/mon">Push A</a><a href="#/day/tue">Pull A</a><a href="#/day/wed">Legs A</a>
+      </div>
+      <div>
+        <p class="foot-h">Systems</p>
+        <a href="#/pullups">Pull-up progression</a><a href="#/abs">Core matrix</a><a href="#/cardio">Cardio &amp; loading</a><a href="#/you">Calorie &amp; protein maths</a>
+      </div>
+    </div>
+    <p class="fine legal">Training information, not medical advice. Abdominal work builds the muscle — visible abs come
+    from overall body-fat level, which is driven by your calorie balance. Clear any new programme with a doctor if you
+    have injuries or medical conditions.</p>
+  </div>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
